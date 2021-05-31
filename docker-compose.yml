@@ -6,12 +6,14 @@ services:
     build: 
       context: node
     container_name: app
-    image: renandamarate/app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 50s docker-entrypoint.sh npm start
     volumes:
       - ./node:/usr/src/app
     tty: true
     ports:
       - "3000:3000"
+    depends_on: 
+      - db
 
   db:
     image: mysql:5.7
@@ -31,7 +33,6 @@ services:
     build: 
       context: ./nginx
       dockerfile: Dockerfile
-    image: renandamarate/nginx
     container_name: nginx
     ports: 
       - "8080:80"

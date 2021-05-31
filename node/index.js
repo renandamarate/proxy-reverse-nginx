@@ -18,17 +18,18 @@ connection.query(`INSERT IGNORE INTO people(nome) values('Renan');`)
 connection.query(`INSERT IGNORE INTO people(nome) values('Bruna');`)
 connection.query(`INSERT IGNORE INTO people(nome) values('Miguel');`)
 
-var retorno = "";
-connection.query('SELECT * FROM people;', function (err, data) {
-    if (err) console.log(err);
-    retorno = data;
-  });
-
-connection.end()
-
-app.get('/', (req,res) => {
-    res.send(JSON.stringify(retorno))
-})
+app.get('/', (req, res) => {
+  
+    connection.query(`SELECT nome FROM people`, (err, data) => {
+        if (err) console.log(err);
+        res.send(`
+            <h1>Full Cycle Rocks!</h1>
+            <ol>
+            ${!!data.length ? data.map(el => `<li>${el.nome}</li>`).join('') : ''}
+            </ol>
+        `)
+    })
+  })
 
 app.listen(port, ()=> {
     console.log('Rodando na porta ' + port)
